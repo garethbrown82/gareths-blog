@@ -97,10 +97,59 @@ As this is a get request you can just paste the URL in your browser and you'll s
 
 Woo hoo! Looks like that worked perfectly :)
 
+### Firestore Setup
 
+We're going to start with writing a get request, except that we have no data to get! So initially we're just going to manually add data to the database that we can retrieve. Later we'll add this using another function.
 
+We don't have Firestore initialised yet so let's do that now. Stop the Firebase emulator if it is running and in the root of your project run:
+```
+firebase init firestore
+```
 
+You'll most likely see the following output indicating that you need to setup Firestore in your Firebase project.
 
+![Firestore initialise output](./assets/firestore_init_output.png)
+
+Fortunately is tells you the URL you can paste into your browser to set up Firestore. The link for my project is https://console.firebase.google.com/project/notes-editor-c330b/firestore. Yours will be similar. Once you paste this link into the browser you will land on the the Firestore tab of you Firebase project. Click the "Create database" button circled below in blue.
+
+![Create Firestore database](./assets/setup_firestore.png)
+
+You'll be asked to set your initial security rules, for this sake of simplicity just set this to test mode. You can find out more about [Firestore security rules](https://firebase.google.com/docs/firestore/security/get-started) but all you need to know here is that if you put this project live then everyone will have read and write access to your database so don't do that until you've got your security rules covered. I also talk about the security rules in [my Firebase video course](https://www.manning.com/livevideo/building-web-applications-with-firebase)).
+
+Next set the location that's closest to you and click "Enable".
+
+Once Firestore is setup in your project you can run `firebase init firestore`, select all the defaults for questions about which files to use for security rules and indexes. Now that Firestore has been initialised, we will be able to access this in the Firebase emulator. Start up the emulator again with `firebase emulators:start`.
+
+Once the emulator has started navigate to the emulator dashboard in your browser and click on the Firestore tab. You should see an empty database similar to this:
+
+![Empty Firestore tab](./assets/firestore_empty.png)
+
+Lets manually add some data that we can retrieve with our get request...
+
+Click the "Start collection" button and create a collection with a collection ID of `notes`.
+
+![Notes collection](./assets/notes_collection.png)
+
+Click "Next" and you'll be give the option to add fields to the [first document of this collection](https://firebase.google.com/docs/firestore/data-model). Create three fields labelled "created", "title", and "text". The "created" fields will be a time stamp, "title" and "text" will just be strings. Add some values to these fields, you can see how I've populated them below. Click "Save" once you're done.
+
+![Notes document](./assets/notes_document.png)
+
+You should now be able to see your new notes collection and document in your Firestore instance.
+
+![Firestore notes document](./assets/firestore_notes_document.png)
+
+I'm going to add two more notes so I've got a few more, you can add some more yourself by clicking the "Add document" button in the notes collection column. Make sure your notes document have the exact same fields of `created`, `title` and `text`. Once these are added we can start to write our get request function.
+
+---
+**NOTE:**
+
+I'm not sure why but when I first create a new document and click save, my Firestore only shows the notes collection in a single large column. I can't see my documents even when I click on `notes`. This was resolved easily enough just by refreshing the browser.
+
+![Collection screen bug](./assets/collection_bug.png)
+
+---
+
+### Get request
 
 
 
@@ -131,5 +180,12 @@ A great reference for what a Firebase project is and how it relates to projects 
 
 The CLI you need for all things Firebase.
 
+[Firestore security rules](https://firebase.google.com/docs/firestore/security/get-started)
+
+An important concept to know if your going to use Firebase for a live web app. Do not put anything live without understanding this first!
+
+[Firebase Firestore](https://firebase.google.com/docs/firestore)
+
+You can learn more about Firestore and how it works here.
 
 
