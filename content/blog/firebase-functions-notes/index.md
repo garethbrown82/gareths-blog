@@ -149,7 +149,117 @@ I'm not sure why but when I first create a new document and click save, my Fires
 
 ---
 
+### Persisting Firestore data in emulator
+
+Before you stop the emulator you should be aware that the data you've just added will not persist, so the next time you fire up the emulator it will be gone!
+
+However while the emulator is still running you can export the data to a specified directory. Let's export the notes data to a directory named firestore_data by running:
+```
+firebase emulators:export firestore_data
+```
+
+You can now safely stop the emulator. Next time you fire up the emulator you can use the following to import the firestore data from the firestore_data directory:
+```
+firebase emulators:start --import=firestore_data
+```
+
+You can then use different data directories for different data sets if required.
+
 ### Get request
+
+// Basic layout
+* Install express into functions folder
+
+We're going to use express to handle our requests, so install this first. Make sure you're in the `/functions` directory as this is where we'll manage the packages for our cloud functions. Later we may want to setup a front end to consume the endpoints, which we want to keep separate from the cloud functions.
+
+Install express inside `/notes-editor/functions` directory with:
+
+```
+npm install --save express
+```
+
+Now create a new file named `notes.js` inside `/notes-editor/functions` and add the following code:
+
+**notes.js**
+```js
+const functions = require('firebase-functions');
+const express = require('express');
+const admin = require('firebase-admin');
+
+// Create express app
+const app = express();
+
+// Initialize Firebase admin to access Firestore from the server
+admin.initializeApp();
+
+app.get('/', async (request, response) => {
+  functions.logger.info('Triggering get notes request', { structuredData: true });
+
+  // Use admin to access a reference to the notes collection in Firestore
+  const notesRef = admin.firestore().collection('notes');
+
+  // Get all notes from the notes collection
+  const notesCollection = await notesRef.get();
+
+  // Add notes document data to an array
+  let notes = [];
+  notesCollection.forEach((note) => {
+    notes.push(note.data());
+  });
+
+  // return notes array as a json response
+  response.json(notes);
+});
+
+exports.notes = functions.https.onRequest(app);
+
+```
+
+I've added comments to the code to give a brief explanation of what's happing. You can see we've imported express to manage the request and also the [Firebase admin SDK](https://firebase.google.com/docs/database/admin/start), which we use to access the Firestore API by calling `admin.firestore()`. We then get a reference to the `notes` collection and asynchronously call the `get()` method the return the notes. We add the note data from each document to an array and return the array in json format.
+
+Now open up the `index.js` file which contains our 'hello world' function. Delete all the current code and use this file to import and export our `notes.js` file.
+
+**index.js**
+```js
+const notes = require('./notes');
+
+exports.notes = notes.notes;
+```
+
+Call your function in the browser again, remember you can find the URI in the firebase emulator logs tab. When I call this get request it returns the following json data.
+```json
+[
+  {
+    "created": {
+      "_seconds": 1602570624,
+      "_nanoseconds": 649000000
+    },
+    "title": "My First Note",
+    "text": "This is the text of my first note."
+  },
+  {
+    "created": {
+      "_seconds": 1602571345,
+      "_nanoseconds": 317000000
+    },
+    "title": "To do",
+    "text": "Finish this tutorial."
+  },
+  {
+    "created": {
+      "_seconds": 1602571432,
+      "_nanoseconds": 222000000
+    },
+    "title": "Exercise",
+    "text": "Rock climbing on Friday."
+  }
+]
+```
+We've not successfully returned the data stored in Firestore using a Firebase Cloud Function, well done! Now let's write a function that will add a new notes to Firestore using a post request.
+
+
+### Post request
+
 
 
 
