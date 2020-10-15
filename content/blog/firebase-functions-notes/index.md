@@ -93,7 +93,7 @@ Navigate to the Logs tab, this will give you the output you need to find out whe
 
 As this is a get request you can just paste the URL in your browser and you'll see the respone.
 
-![Hello world response](helloworld_response)
+![Hello world response](./assets/helloworld_response.png)
 
 Woo hoo! Looks like that worked perfectly :)
 
