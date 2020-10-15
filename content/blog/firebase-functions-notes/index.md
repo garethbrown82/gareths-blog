@@ -195,24 +195,29 @@ admin.initializeApp();
 app.get('/', async (request, response) => {
   functions.logger.info('Triggering get notes request', { structuredData: true });
 
-  // Use admin to access a reference to the notes collection in Firestore
-  const notesRef = admin.firestore().collection('notes');
-
-  // Get all notes from the notes collection
-  const notesCollection = await notesRef.get();
-
-  // Add notes document data to an array
-  let notes = [];
-  notesCollection.forEach((note) => {
-    notes.push(note.data());
-  });
-
-  // return notes array as a json response
-  response.json(notes);
+  try {
+    // Use admin to access a reference to the notes collection in Firestore
+    const notesRef = admin.firestore().collection('notes');
+  
+    // Get all notes from the notes collection in descending order of 'created' field
+    const notesCollection = await notesRef.orderBy('created', 'desc').get();
+  
+    // Add notes document data to an array
+    let notes = [];
+    notesCollection.forEach((note) => {
+      notes.push(note.data());
+    });
+  
+    // return notes array as a json response
+    response.json(notes);
+  } catch (error) {
+    // Log and return error status if things go wrong
+    functions.logger.error(error);
+    response.status(500).send('Internal server error');
+  }
 });
 
 exports.notes = functions.https.onRequest(app);
-
 ```
 
 I've added comments to the code to give a brief explanation of what's happing. You can see we've imported express to manage the request and also the [Firebase admin SDK](https://firebase.google.com/docs/database/admin/start), which we use to access the Firestore API by calling `admin.firestore()`. We then get a reference to the `notes` collection and asynchronously call the `get()` method the return the notes. We add the note data from each document to an array and return the array in json format.
@@ -260,7 +265,52 @@ We've not successfully returned the data stored in Firestore using a Firebase Cl
 
 ### Post request
 
+Directly underneath our get request we're going to create a post request to the same endpoint, which will allow us to save notes to Firestore.
 
+```js
+
+app.post('/', async (request, response) => {
+  functions.logger.info('Triggering post note request', { structuredData: true });
+  
+  // Construct the note object to add to Firestore
+  const note = { 
+    created: admin.firestore.Timestamp.now(),
+    title: request.body.title,
+    text: request.body.text, 
+  }
+
+  try {
+    // Save the note to the Firestore notes collection
+    await admin.firestore().collection('notes').add(note);
+    response.json({ message: 'Note added successfully'});
+  } catch (error) {
+    // Log and return error status if things go wrong
+    functions.logger.error(error);
+    response.status(500).send('Internal server error');
+  }
+});
+```
+
+We've used the Firestore `Timestamp` class to get the created time in the Firestore timestamp format. The title and text come straight from the body of the request, which will need to look like this:
+```json
+{
+    "title": "Title goes here",
+    "text": "Text for your note goes here"
+}
+```
+
+To try this now you won't be able to use the browser becuase it is a get request, you'll need to use a tool like [Postman](https://www.postman.com/) or curl.
+
+The URI will be the same as your get request but you'll need to specify in Postman that it's a post request. My Postman setup for this request looks like this:
+
+![Postman add note request](./assets/postman_request.png)
+
+Once you've successfully added a note your response should indicate this with:
+```json
+{
+    "message": "Note added successfully"
+}
+```
 
 
 
