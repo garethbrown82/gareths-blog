@@ -231,7 +231,7 @@ const notes = require('./notes');
 exports.notes = notes.notes;
 ```
 
-Call your function in the browser again, remember you can find the URI in the firebase emulator logs tab. When I call this get request it returns the following json data.
+Call your function in the browser again, remember you can find the URL in the firebase emulator logs tab. When I call this get request it returns the following json data.
 ```json
 [
   {
@@ -301,7 +301,7 @@ We've used the Firestore `Timestamp` class to get the created time in the Firest
 
 To try this now you won't be able to use the browser becuase it is a get request, you'll need to use a tool like [Postman](https://www.postman.com/) or curl.
 
-The URI will be the same as your get request but you'll need to specify in Postman that it's a post request. My Postman setup for this request looks like this:
+The URL will be the same as your get request but you'll need to specify in Postman that it's a post request. My Postman setup for this request looks like this:
 
 ![Postman add note request](./assets/postman_request.png)
 
@@ -312,14 +312,48 @@ Once you've successfully added a note your response should indicate this with:
 }
 ```
 
+### Deploying functions to live
 
+We've now create a post request to save a note to Firestore and a get request to get all our notes from Firestore. It's time for us to deploy to live. It's important again though to point out that we have not implemented anykind of authentication here so when it's live anyone can add notes to your projects instance of Firestore. But for the purpose of this tutorial and learning the process we're going to be ok with that for now.
 
+If you're using the free Spark plan you'll need to change the node version to 8, although as discussed earlier in this tutorial this is deprecated and will be decommissioned on 2021-03-15.
 
+In your `/functions/package.json` file make sure node is set to version 8:
+```json
+"engines": {
+  "node": "8"
+}
+```
 
+If you try to deploy your functions on the free Spark plan with the node version set to 10 then you'll see the following error:
+```
+Error: HTTP Error: 400, Billing account for project '3012########' is not found. Billing must be enabled for activation of service(s) 'cloudbuild.googleapis.com,containerregistry.googleapis.com' to proceed.
+```
 
+Once you've changed your node version to 8 then you can deploy your functions to live using:
 
+```
+firebase deploy --only functions
+```
 
+When I first tried this I got the following unhelpful error:
+```
+Error: HTTP Error: 403, Unknown Error
+```
 
+This is resolved by logging into your Firebase console, clicking on the 'functions' menu link and clicking 'Get started'. You'll be shown a couple of steps about how the setup Functions in your project, but we've already gone through these so you can ignore them.
+
+![Firebase functions get started](./assets/functions_get_started.png)
+
+Now try deploying your function again with `firebase deploy --only functions`. Once deployed successfully you should see something like the following:
+
+![Functions deployed successfully](./assets/functions_deployed.png)
+
+You can see I've highlighted the endpoint URL to access your function. You can now use this in Postman to add some notes to your live instance of Firestore. You can see your notes added to Firestore from your Firebase project console, as seen below:
+
+![Firestore project console](./assets/firestore_console.png)
+
+Ok that concludes this tutorial and should be enough to get you started using Firebase Cloud Functions. I've put some references below that I found very helpful and that I referenced throughout this tutorial. I recommend that you have a look.
 
 
 
