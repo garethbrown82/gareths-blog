@@ -49,8 +49,48 @@ A: SSH
 You should then see a message indicating that you have `Configured git protocol` and who you're logged in as.
 
 
-**CLI commands**
+### CLI commands
 
-This will get you up and running initially and at this point is as far as I've gotten. I'm planning on using it for work over the next few weeks to see how I find it. To find out more info about what the GitHub CLI can do I would recommend [reading the docs](https://cli.github.com/manual/).
+I'll probably update the following section as I use this CLI tool. I'm planning on using it overtime to see how I find it. To find out more info about what the GitHub CLI can do I would recommend [reading the docs](https://cli.github.com/manual/).
 
+**Creating a pull request**
 
+Make sure you're on the branch you want to create a pull request for and run:
+
+```
+gh pr create
+```
+
+You will be asked a series of questions about the details of your pull request:
+
+Title? - Title of the PR
+Body? - Body description of the PR. This can be opened in nano by pressing 'e' or skipped with 'enter'
+
+Then you're given the option to submit your PR. Once submitted you're given the link that will take you directly to the PR in GitHub.
+
+This will create a PR into your default branch, if you want the PR into another branch you can add the `--base` flag. If I wanted the PR to go into my develop branch for example I could use:
+```
+gh pr create --base develop
+```
+
+Now that our PR exists let's pretend that someone has reviewed it and found it to be of the highest coding standard they've ever seen. So it's time to merge. This can be done directly from the CLI with either the PR number, URL or branch name.
+
+To display a list of your current PRs enter:
+
+```
+gh pr list
+```
+
+Then once you have the number for the PR you want to merge you can do this with:
+
+```
+gh pr merge 18
+```
+
+This will give you a few options of how you would like to merge such as `Create a merge commit`, `Rebase and merge` or `Squash and merge`. I'm going to pick the first option to create a merge commit. You'll also be given the option to delete the both the local and remote branches, which I really like becuase I'm terrible at remembering to delete branches I don't need anymore.
+
+To run the command without having to answer these questions you can also use the flags `--merge` and `--delete-branch` or using the single character flags together:
+
+```
+gh pr merge 18 -md
+```
