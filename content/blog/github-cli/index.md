@@ -94,3 +94,8 @@ To run the command without having to answer these questions you can also use the
 ```
 gh pr merge 18 -md
 ```
+
+---
+**Note**
+If you get a message indicating that `Pull request #18 (Github CLI) can't be merged right now; try again in a few seconds` then it may be becuase some kind of CI is still running or there's another reason you can't merge yet such as requiring more reviews etc...
+---
