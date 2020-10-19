@@ -84,13 +84,13 @@ gh pr list
 Then once you have the number for the PR you want to merge you can do this with:
 
 ```
-gh pr 18
+gh pr merge 18
 ```
 
 This will give you a few options of how you would like to merge such as `Create a merge commit`, `Rebase and merge` or `Squash and merge`. I'm going to pick the first option to create a merge commit. You'll also be given the option to delete the both the local and remote branches, which I really like becuase I'm terrible at remembering to delete branches I don't need anymore.
 
-To run the command without having to answer these questions you can also use the flags `--merge` and `--delete-branch` or:
+To run the command without having to answer these questions you can also use the flags `--merge` and `--delete-branch` or using the single character flags together:
 
 ```
-gh pr 18 -m -d
+gh pr merge 18 -md
 ```
