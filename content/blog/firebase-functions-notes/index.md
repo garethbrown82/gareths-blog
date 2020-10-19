@@ -358,6 +358,10 @@ Ok that concludes this tutorial and should be enough to get you started using Fi
 
 Here's some links to documentations that I've used and reference material for this post. I'd recommend you looking at them if you want to know more about the Firebase concepts I've discussed in this post.
 
+[Building Web Applications with Firebase](https://www.manning.com/livevideo/building-web-applications-with-firebase)
+
+I've developed this video course with Manning. The focus is on getting developers brand new to Firebase up and running quickly to build web apps using Firebase services such as Hosting, Firestore, Cloud Storage and Authentication.
+
 [Get started with Cloud Functions](https://firebase.google.com/docs/functions/get-started)
 
 This is the first place I would go to as a starting point for Firebase Cloud Functions and was referenced heavily for the initial setup phase of this post.
