@@ -167,9 +167,6 @@ You can then use different data directories for different data sets if required.
 
 ### Get request
 
-// Basic layout
-* Install express into functions folder
-
 We're going to use express to handle our requests, so install this first. Make sure you're in the `/functions` directory as this is where we'll manage the packages for our cloud functions. Later we may want to setup a front end to consume the endpoints, which we want to keep separate from the cloud functions.
 
 Install express inside `/notes-editor/functions` directory with:
