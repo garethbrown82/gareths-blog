@@ -64,6 +64,7 @@ gh pr create
 You will be asked a series of questions about the details of your pull request:
 
 Title? - Title of the PR
+
 Body? - Body description of the PR. This can be opened in nano by pressing 'e' or skipped with 'enter'
 
 Then you're given the option to submit your PR. Once submitted you're given the link that will take you directly to the PR in GitHub.
@@ -87,7 +88,7 @@ Then once you have the number for the PR you want to merge you can do this with:
 gh pr merge 18
 ```
 
-This will give you a few options of how you would like to merge such as `Create a merge commit`, `Rebase and merge` or `Squash and merge`. I'm going to pick the first option to create a merge commit. You'll also be given the option to delete the both the local and remote branches, which I really like becuase I'm terrible at remembering to delete branches I don't need anymore.
+This will give you a few options of how you would like to merge such as `Create a merge commit`, `Rebase and merge` or `Squash and merge`. I'm going to pick the first option to create a merge commit. You'll also be given the option to delete both the local and remote branches, which I really like becuase I'm terrible at remembering to delete branches I don't need anymore.
 
 To run the command without having to answer these questions you can also use the flags `--merge` and `--delete-branch` or using the single character flags together:
 
@@ -97,5 +98,5 @@ gh pr merge 18 -md
 
 ---
 **Note**
-If you get a message indicating that `Pull request #18 (Github CLI) can't be merged right now; try again in a few seconds` then it may be becuase some kind of CI is still running or there's another reason you can't merge yet such as requiring more reviews etc...
+If you get a message indicating that **Pull request #18 (Github CLI) can't be merged right now; try again in a few seconds** then it may be because some kind of CI is still running or there's another reason you can't merge yet such as requiring more reviews etc...
 ---

@@ -167,9 +167,9 @@ You can then use different data directories for different data sets if required.
 
 ### Get request
 
-We're going to use express to handle our requests, so install this first. Make sure you're in the `/functions` directory as this is where we'll manage the packages for our cloud functions. Later we may want to setup a front end to consume the endpoints, which we want to keep separate from the cloud functions.
+We're going to use Express to handle our requests, so install this first. Make sure you're in the `/functions` directory as this is where we'll manage the packages for our cloud functions. Later we may want to setup a front end to consume the endpoints, which we want to keep separate from the cloud functions.
 
-Install express inside `/notes-editor/functions` directory with:
+Install Express inside `/notes-editor/functions` directory with:
 
 ```
 npm install --save express
@@ -183,7 +183,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const admin = require('firebase-admin');
 
-// Create express app
+// Create Express app
 const app = express();
 
 // Initialize Firebase admin to access Firestore from the server
@@ -217,7 +217,7 @@ app.get('/', async (request, response) => {
 exports.notes = functions.https.onRequest(app);
 ```
 
-I've added comments to the code to give a brief explanation of what's happing. You can see we've imported express to manage the request and also the [Firebase admin SDK](https://firebase.google.com/docs/database/admin/start), which we use to access the Firestore API by calling `admin.firestore()`. We then get a reference to the `notes` collection and asynchronously call the `get()` method the return the notes. We add the note data from each document to an array and return the array in json format.
+I've added comments to the code to give a brief explanation of what's happing. You can see we've imported Express to manage the request and also the [Firebase admin SDK](https://firebase.google.com/docs/database/admin/start), which we use to access the Firestore API by calling `admin.firestore()`. We then get a reference to the `notes` collection and asynchronously call the `get()` method to return the notes. We add the note data from each document to an array and return the array in json format.
 
 Now open up the `index.js` file which contains our 'hello world' function. Delete all the current code and use this file to import and export our `notes.js` file.
 
@@ -257,7 +257,7 @@ Call your function in the browser again, remember you can find the URL in the fi
   }
 ]
 ```
-We've not successfully returned the data stored in Firestore using a Firebase Cloud Function, well done! Now let's write a function that will add a new notes to Firestore using a post request.
+We've now successfully returned the data stored in Firestore using a Firebase Cloud Function, well done! Now let's write a function that will add a new notes to Firestore using a post request.
 
 
 ### Post request
