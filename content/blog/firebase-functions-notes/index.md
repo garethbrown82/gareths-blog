@@ -1,5 +1,5 @@
 ---
-title: Building a notes API with Firebase Functions
+title: Building a notes API with Firebase Functions - Part 1
 date: "2020-10-08T08:54:01+0000"
 ---
 
