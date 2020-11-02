@@ -50,7 +50,7 @@ You can see that I've also deleted the default image.
 
 ```vue
 <template>
-  <NotesList msg="Welcome to Your Vue.js App" />
+  <NotesList />
 </template>
 
 <script>
