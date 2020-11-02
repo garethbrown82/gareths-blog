@@ -48,6 +48,7 @@ export default {
 Then render this component in the main `App.vue` file by replacing the `HelloWorld.vue` component with your `NotesList.vue` component.
 You can see that I've also deleted the default image.
 
+### **`App.vue`**
 ```vue
 <template>
   <NotesList />
@@ -79,4 +80,78 @@ export default {
 Once you've done this just go ahead and delete the now redundant `HelloWorld.vue` file. If you reload the browser now you should see a white screen with the words 'Notes go here...'.
 
 ![Browser screenshot](./assets/notes_go_here.png)
+
+Now we'll hard code a list of notes in our component using component data. I'm primarily a React developer so if you're familiar with React component data is basically the same as component state. To render these notes to the UI we can using the Vue `v-for` directive which will loop through the array of notes and display each one.
+
+### **`NotesList.vue`**
+```vue
+<template>
+  <h1>Notes</h1>
+  <!-- Render the array of notes using v-for directive just like a for loop -->
+  <div v-for="note in notes" v-bind:key="note.title">
+    <h3>{{ note.title }}</h3>
+    <p>{{ note.text }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      // Store the notes using the components local data (component state)
+      notes: [
+        { title: 'Shopping List', text: 'Tomatoes, Milk, Salt' },
+        { title: 'Book', text: 'Name of the wind' },
+        { title: 'Note', text: 'This is a note' },
+      ],
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+Modify the `App.vue` file to add a wrapper `div` with some minor styling so the notes are displayed nicely.
+
+### **`App.vue`**
+```vue
+<template>
+  <div class="wrapper">
+    <NotesList />
+  </div>
+</template>
+
+<script>
+import NotesList from './components/NotesList.vue'
+
+export default {
+  name: 'App',
+  components: {
+    NotesList
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+.wrapper {
+  width: 40%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+</style>
+
+```
+
 
