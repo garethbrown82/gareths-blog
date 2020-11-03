@@ -98,7 +98,7 @@ Now we'll hard code a list of notes in our component using the composition API b
 import { ref } from 'vue';
 
 export default {
-  // Using the composition API to set our component data
+  // Using the composition API to set our component variables
   setup() {
     let notes = ref([
       { title: 'Shopping List', text: 'Tomatoes, Milk, Salt' },
