@@ -81,7 +81,7 @@ Once you've done this just go ahead and delete the now redundant `HelloWorld.vue
 
 ![Browser screenshot](./assets/notes_go_here.png)
 
-Now we'll hard code a list of notes in our component using component data. I'm primarily a React developer so if you're familiar with React component data is basically the same as component state. To render these notes to the UI we can using the Vue `v-for` directive which will loop through the array of notes and display each one.
+Now we'll hard code a list of notes in our component using the composition API by setting `notes` as a reactive variable. I'm primarily a React developer so if you're familiar with React then setting a variable using `ref()` is basically the same as component state in React. To render these notes to the UI we can using the Vue `v-for` directive which will loop through the array of notes and display each one.
 
 ### **`NotesList.vue`**
 ```vue
@@ -95,16 +95,20 @@ Now we'll hard code a list of notes in our component using component data. I'm p
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
-  data() {
+  // Using the composition API to set our component data
+  setup() {
+    let notes = ref([
+      { title: 'Shopping List', text: 'Tomatoes, Milk, Salt' },
+      { title: 'Book', text: 'Name of the wind' },
+      { title: 'Note', text: 'This is a note' },
+    ]);
+    
     return {
-      // Store the notes using the components local data (component state)
-      notes: [
-        { title: 'Shopping List', text: 'Tomatoes, Milk, Salt' },
-        { title: 'Book', text: 'Name of the wind' },
-        { title: 'Note', text: 'This is a note' },
-      ],
-    }
+      notes,
+    };
   }
 }
 </script>
