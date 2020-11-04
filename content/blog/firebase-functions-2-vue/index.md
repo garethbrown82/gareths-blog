@@ -5,7 +5,7 @@ date: "2020-10-23T07:22:13+00:00"
 
 This is a part 2 of the previous post for setting up Firebase Functions. I thought it would be good to have a frontend for our API. I'm very new to Vue JS so I've chosen to use Vue mainly as a way to learn it further myself. I'm not going to explain in detail about which part of Vue js does what, rather I'm just going to show you how to implement it. There are loads of really good introductions and how tos for Vue js if you want to look into it in more detail, I would recommend [Tania Rascia's overview and walkthrough](https://www.taniarascia.com/getting-started-with-vue/) (Vue 2). A good place to start is also the [Vue Introduction](https://vuejs.org/v2/guide/index.html). This is for Vue 2 but there's a drop down on the page where you can see the introduction for Vue 3.
 
-### Installing Vue JS
+## Installing Vue JS
 
 First we need to install Vue on in our project. Make sure you're a level up from your the root of your project directory. The Vue CLI can be used to create a whole new Vue project but can also add Vue to an existing project, which is what we're going to do.
 
@@ -24,7 +24,7 @@ npm run serve
 
 ![Vue default app](./assets/vue_default_app.png)
 
-### Display the notes
+## Display the notes
 
 The first bit of UI we'll work on is displaying a list of all the notes we have saved. Create a directory named `components` and a file inside named `components/NotesList.vue`. We'll just add some placeholder text here for the moment.
 
@@ -158,4 +158,50 @@ export default {
 
 ```
 
+## Run Vue with Firebase emulator
+
+To develop and test this locally we'll need to run Vue alongside the Firebase emulator so that Vue can make requests to our Firebase functions. At the moment even if you just try to run them separately they both try to run on port `8080` so you'll only be able to run one at a time. Let's fix this now.
+
+Change the Firebase emulator to run on a different port, I had to change mine to port `8082`.
+
+### **`firebase.json`**
+```jsonc
+{
+  "functions": {
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint"
+    ],
+    "source": "functions"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  // Add this to chance the port number the Firebase emulator will run on
+  "emulators": {
+    "firestore": {
+      "port": 8082
+    }
+  }
+}
+```
+
+Then in the `scripts` section of your `package.json` file add the follow script to be ran using `npm start`.
+
+### **`package.json`**
+```jsonc
+"scripts": {
+  // Add the line below to run the Vue server and Firebase emulator concurrently
+    "start": "npm run serve & firebase emulators:start --import=firestore_data",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+```
+
+Now try running Vue and the Firebase emulator concurrently in your terminal, run this from the root of your project directory.
+
+```
+npm start
+```
 
