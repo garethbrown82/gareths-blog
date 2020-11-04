@@ -205,3 +205,52 @@ Now try running Vue and the Firebase emulator concurrently in your terminal, run
 npm start
 ```
 
+## Get notes from Firestore
+
+In part 1 of this tutorial we added some notes to Firestore and create a Firebase function that would get the notes from Firestore and return them to us. If you go to your Firebase emulator logs tab (mine is at http://localhost:4000/logs) you'll see the endpoint for this get request.
+
+![Endpoint in Firebase logs](./assets/firebase_logs.png).
+
+We're going to setup our Vue app so that we populate the note by getting them from this endpoint. It's common to use axios for this, so that's what we'll do. Install axios using the following:
+
+```
+npm install axios
+```
+
+Then in your `NotesList.vue` file change to script to request notes from your endpoint using axios. We'll do this in the `onMounted` lifecycle hook which is call when the component is mounted. Remember you can find your `notes` endpoint in the logs we discussed above.
+
+### **`NotesList.vue`**
+```vue
+<script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+export default {
+  // Using the composition API to set our component variables
+  setup() {
+    let notes = ref([]);
+
+    onMounted(() => {
+      // Your enpoint will be different to this so make sure to find it in your Firebase emulator logs
+      axios
+        .get('http://localhost:5001/notes-editor-c330b/us-central1/notes')
+        .then((notesResult) => {
+          notes.value = notesResult;
+        });
+    });
+    
+    return {
+      notes,
+    };
+  }
+}
+</script>
+```
+
+Make sure your servers are running with `npm start` and reload your Vue app in the browser (http://localhost:8080/). At this point you will not see any notes and possibly wonder why! Well you just got CORS'd! Open the browser console and you'll see the following error:
+
+```
+Access to XMLHttpRequest at 'http://localhost:5001/notes-editor-c330b/us-central1/notes' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+This is becuase our Firebase function enpoint has not specified an `Access-Control-Allow-Origin` header indicating which client may call it. Well need to modify the code in our function to allow our client to call it.
