@@ -235,7 +235,7 @@ export default {
       axios
         .get('http://localhost:5001/notes-editor-c330b/us-central1/notes')
         .then((notesResult) => {
-          notes.value = notesResult;
+          notes.value = notesResult.data;
         });
     });
     
@@ -253,4 +253,4 @@ Make sure your servers are running with `npm start` and reload your Vue app in t
 Access to XMLHttpRequest at 'http://localhost:5001/notes-editor-c330b/us-central1/notes' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
-This is becuase our Firebase function enpoint has not specified an `Access-Control-Allow-Origin` header indicating which client may call it. Well need to modify the code in our function to allow our client to call it.
+This is becuase our Firebase function enpoint has not specified an `Access-Control-Allow-Origin` header indicating which client may call it. We'll need to modify the code in our function to allow our client to call it.
