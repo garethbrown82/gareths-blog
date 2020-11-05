@@ -253,4 +253,18 @@ Make sure your servers are running with `npm start` and reload your Vue app in t
 Access to XMLHttpRequest at 'http://localhost:5001/notes-editor-c330b/us-central1/notes' from origin 'http://localhost:8080' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
 
-This is becuase our Firebase function enpoint has not specified an `Access-Control-Allow-Origin` header indicating which client may call it. We'll need to modify the code in our function to allow our client to call it.
+This is becuase our Firebase function enpoint has not specified an `Access-Control-Allow-Origin` header indicating which client may call it. We'll need to modify the code in our function to allow our client to call it. This is relatively easy to do using the 'cors' package which should already be installed. In your `functions/notes.js` file import the cors package with `const cors = require('cors');` and bind the middleware to the app object using `app.use(cors({ origin: true }));` after the app has been created. The code should look something like this:
+
+```js
+// Import cors package
+const cors = require('cors');
+
+// Create express app
+const app = express();
+
+// Bind cors middleware to the app
+app.use(cors({ origin: true }));
+
+```
+
+Now reload the browser and you should see notes displayed that are returned from Firestore.
