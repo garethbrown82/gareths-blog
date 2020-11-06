@@ -268,3 +268,86 @@ app.use(cors({ origin: true }));
 ```
 
 Now reload the browser and you should see notes displayed that are returned from Firestore.
+
+## Add notes to Firestore
+
+We want to be able to use the UI to write a note that is saved to our Firestore instance. Let's create a new Vue component for this named `components/CreateNote.vue`.
+
+### **`CreateNote.vue`**
+```vue
+<template>
+  <h1>Add note</h1>
+  <input v-model="noteTitle" />
+  <textarea v-model="noteText"></textarea>
+  <!-- This button triggers the addNote function -->
+  <button @click="addNote">Add note</button>
+</template>
+
+<script>
+import { ref } from 'vue';
+import axios from 'axios';
+
+export default {
+  setup() {
+    let noteTitle = ref('');
+    let noteText = ref('');
+
+    // This addNote function creates a post request that sends our note title and text to our cloud function
+    // which will save it to Firestore. Make sure to enter your specific endpoint URL.
+    function addNote() {
+      axios.post('http://localhost:5001/notes-editor-c330b/us-central1/notes', {
+        title: noteTitle.value,
+        text: noteText.value,
+      });
+    }
+
+    return {
+      noteTitle,
+      noteText,
+      addNote,
+    }
+  }
+}
+</script>
+
+<style scoped>
+  input, textarea, button {
+    font-family: inherit;
+    margin: 10px 0;
+  }
+
+  button {
+    width: 25%;
+    margin-bottom: 50px;
+  }
+</style>
+```
+
+We've create a function named `addNote()` which will take the title and text of the note we enter in the text input and text area, then send it using a post request to our endpoint. You'll need to add your own endpoint URL.
+
+Now render this new component inside `App.vue` like the following:
+
+```vue
+<template>
+  <div class="wrapper">
+    <CreateNote />
+    <NotesList />
+  </div>
+</template>
+
+<script>
+import NotesList from './components/NotesList.vue';
+import CreateNote from './components/CreateNote';
+
+export default {
+  name: 'App',
+  components: {
+    NotesList,
+    CreateNote,
+  }
+}
+</script>
+```
+
+Now when you reload the browser you'll be able to enter a note title, note text and press the button which will save the details to your instance of Firestore. The only issue is you won't see anything has happened unless you check Firestore to verify that the note has been added. This is not a great user experience. Let's add some code next so that the note is added to the list of notes that the user sees on screen.
+
