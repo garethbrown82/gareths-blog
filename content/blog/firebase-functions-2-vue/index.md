@@ -327,6 +327,7 @@ We've create a function named `addNote()` which will take the title and text of 
 
 Now render this new component inside `App.vue` like the following:
 
+### **`App.vue`**
 ```vue
 <template>
   <div class="wrapper">
@@ -349,5 +350,179 @@ export default {
 </script>
 ```
 
-Now when you reload the browser you'll be able to enter a note title, note text and press the button which will save the details to your instance of Firestore. The only issue is you won't see anything has happened unless you check Firestore to verify that the note has been added. This is not a great user experience. Let's add some code next so that the note is added to the list of notes that the user sees on screen.
+Now when you reload the browser you'll be able to enter a note title, note text and press the button which will save the details to your instance of Firestore. The only issue is you won't see anything has happened unless you check Firestore to verify that the note has been added. This is not a great user experience. Unfortunatley we've written this code in a way that makes this difficult because the logic for creating a note is in `CreateNotes.vue` and the logic for getting the notes is in `NotesList.vue` both of which contain their own state and are child nodes of `App.vue`. This makes it difficult for one component to know what the other component is doing.
+
+
+## Refactor components
+
+To fix this and make the whole app easier to work with we're going to move the state and logic up to the parent `App.vue` component, then we'll just send the state down to the child components as props. First add the required code to the `App.vue` component.
+
+### **`App.vue`**
+```vue
+<template>
+  <div class="wrapper">
+    <CreateNote
+      v-bind:noteTitle="noteTitle"
+      v-bind:noteText="noteText"
+      v-on:update-notetext="updateNoteText"
+      v-on:update-notetitle="updateNoteTitle"
+      v-on:add-note="addNote"
+    />
+    <NotesList v-bind:notes="notes" />
+  </div>
+</template>
+
+<script>
+import NotesList from './components/NotesList.vue';
+import CreateNote from './components/CreateNote';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+export default {
+  name: 'App',
+  components: {
+    NotesList,
+    CreateNote,
+  },
+  setup() {
+    let notes = ref([]);
+    let noteTitle = ref('');
+    let noteText = ref('');
+
+    onMounted(() => {
+      fetchNotes();
+    });
+
+    // This addNote function creates a post request that sends our note title and text to our cloud function
+    // which will save it to Firestore
+    function addNote() {
+      axios.post('http://localhost:5001/notes-editor-c330b/us-central1/notes', {
+        title: noteTitle.value,
+        text: noteText.value,
+      }).then(() => {
+        // Get the updated notes once we've added a new one
+        fetchNotes();
+      });
+    }
+
+    // This fetchNotes function will get the notes from the get endpoint when called
+    function fetchNotes() {
+      axios
+        .get('http://localhost:5001/notes-editor-c330b/us-central1/notes')
+        .then((notesResult) => {
+          notes.value = notesResult.data;
+        });
+    }
+
+    function updateNoteText(text) {
+      noteText.value = text;
+    }
+
+    function updateNoteTitle(title) {
+      noteTitle.value = title;
+    }
+    
+    return {
+      notes,
+      noteTitle,
+      noteText,
+      addNote,
+      updateNoteText,
+      updateNoteTitle,
+    };
+  }
+}
+</script>
+```
+
+There's quite a lot more happening here but the key new additions are as follows:
+
+* All note state is now managed from the parent component `App.vue`.
+
+```js
+let notes = ref([]);
+let noteTitle = ref('');
+let noteText = ref('');
+```
+
+* Then the `notes` state is passed to the `NoteList.vue` component while the `noteTitle` and `noteText` state is passed to the `CreateNote.vue` component using `v-bind`. The child components will receive these values as props.
+
+* The `App.vue` component will respond to changes made to these values from the `v-on:update-notetext` and `v-on:update-notetitle` event handles, which will call the `updateNoteText(text)` and `updateNoteTitle(title)` functions respectively.
+
+```vue
+<template>
+  <div class="wrapper">
+    <CreateNote
+      v-bind:noteTitle="noteTitle"
+      v-bind:noteText="noteText"
+      v-on:update-notetext="updateNoteText"
+      v-on:update-notetitle="updateNoteTitle"
+      v-on:add-note="addNote"
+    />
+    <NotesList v-bind:notes="notes" />
+  </div>
+</template>
+```
+
+* The `App.vue` component now handles the api requests for `fetchNotes()` and `addNote()`
+* `fetchNotes()` is first called when the component mounts using `onMounted` and then everytime a new note is added.
+```js
+onMounted(() => {
+  fetchNotes();
+});
+```
+
+```js
+.then(() => {
+  // Get the updated notes once we've added a new one
+  fetchNotes();
+});
+```
+
+The change for the two child components `CreateNote.vue` and `NotesList.vue` are mainly to remove the functionality we've now added to the parent `App.vue` component and make sure they receive the props passed to them correctly.
+
+### **`CreateNote.vue`**
+```vue
+<template>
+  <h1>Add note</h1>
+  <input
+    v-bind:value="noteTitle"
+    v-on:input="$emit('update-notetitle', $event.target.value)"
+  />
+  <textarea
+    v-bind:value="noteText"
+    v-on:input="$emit('update-notetext', $event.target.value)"
+  />
+  <!-- This button triggers the addNote function -->
+  <button v-on:click="$emit('add-note')">Add note</button>
+</template>
+
+<script>
+export default {
+  props: {
+    noteTitle: String,
+    noteText: String,
+  }
+}
+</script>
+```
+
+The key change for the `CreateNote.vue` component above is that we bind the `noteTitle` prop to the `<input>` and the `noteText` prop to the `<textarea>` then emit an event everytime the user changes the values or types another letter using `v-on:input`. We also emit an event named `add-note` when the button is clicked, which is handled in the `App.vue` component.
+
+The `NotesList.vue` component now only recieves the `notes` array as a prop passed down from `App.vue` rather than fetching the notes and applying to its own local state. The `<template>` does not change at all.
+
+### **`NotesList.vue`**
+```vue
+<script>
+export default {
+  props: {
+    notes: Array,
+  },
+}
+</script>
+```
+
+
+
+
 
