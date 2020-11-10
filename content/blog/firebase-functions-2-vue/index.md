@@ -29,7 +29,7 @@ npm run serve
 The first section of UI we'll work on is displaying a list of all the notes we have saved. Create a directory named `components` and a file inside named `components/NotesList.vue`. We'll just add some placeholder text here for the moment.
 
 ### **`NotesList.vue`**
-```vue
+```html
 <template>
   <p>Notes go here...</p>
 </template>
@@ -49,7 +49,7 @@ Then render this component in the main `App.vue` file by replacing the `HelloWor
 You can see that I've also deleted the default image.
 
 ### **`App.vue`**
-```vue
+```html
 <template>
   <NotesList />
 </template>
@@ -84,7 +84,7 @@ Once you've done this just go ahead and delete the now redundant `HelloWorld.vue
 Now we'll hard code a list of notes in our component using the composition API by setting `notes` as a reactive variable. I'm primarily a React developer so if you're familiar with React then setting a variable using `ref()` is basically the same as component state in React. To render these notes to the UI we can use the Vue `v-for` directive which will loop through the array of notes and display each one.
 
 ### **`NotesList.vue`**
-```vue
+```html
 <template>
   <h1>Notes</h1>
   <!-- Render the array of notes using v-for directive just like a for loop -->
@@ -121,7 +121,7 @@ export default {
 Modify the `App.vue` file to add a wrapper `div` with some minor styling so the notes are displayed nicely.
 
 ### **`App.vue`**
-```vue
+```html
 <template>
   <div class="wrapper">
     <NotesList />
@@ -220,7 +220,7 @@ npm install axios
 Then in your `NotesList.vue` file change the script to request notes from your endpoint using axios. We'll do this in the `onMounted` lifecycle hook which is called when the component is mounted. Remember you can find your `notes` endpoint in the logs we discussed above.
 
 ### **`NotesList.vue`**
-```vue
+```html
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -274,7 +274,7 @@ Now reload the browser and you should see notes displayed that are returned from
 We want to be able to use the UI to write a note that is saved to our Firestore instance. Let's create a new Vue component for this named `components/CreateNote.vue`.
 
 ### **`CreateNote.vue`**
-```vue
+```html
 <template>
   <h1>Add note</h1>
   <input v-model="noteTitle" />
@@ -328,7 +328,7 @@ We've created a function named `addNote()` which will take the title and text of
 Now render this new component inside `App.vue` like the following:
 
 ### **`App.vue`**
-```vue
+```html
 <template>
   <div class="wrapper">
     <CreateNote />
@@ -358,7 +358,7 @@ Now when you reload the browser you'll be able to enter a note title, note text 
 To fix this and make the whole app easier to work with we're going to move the state and logic up to the parent `App.vue` component, then we'll just send the state down to the child components as props. First add the required code to the `App.vue` component.
 
 ### **`App.vue`**
-```vue
+```html
 <template>
   <div class="wrapper">
     <CreateNote
@@ -449,7 +449,7 @@ let noteText = ref('');
 
 * The `App.vue` component will respond to changes made to these values from the `v-on:update-notetext` and `v-on:update-notetitle` event handles, which will call the `updateNoteText(text)` and `updateNoteTitle(title)` functions respectively.
 
-```vue
+```html
 <template>
   <div class="wrapper">
     <CreateNote
@@ -482,7 +482,7 @@ onMounted(() => {
 The change for the two child components `CreateNote.vue` and `NotesList.vue` are mainly to remove the functionality we've now added to the parent `App.vue` component and make sure they receive the props passed to them correctly.
 
 ### **`CreateNote.vue`**
-```vue
+```html
 <template>
   <h1>Add note</h1>
   <input
@@ -512,7 +512,7 @@ The key change for the `CreateNote.vue` component above is that we bind the `not
 The `NotesList.vue` component now only recieves the `notes` array as a prop passed down from `App.vue` rather than fetching the notes and applying to its own local state. The `<template>` does not change at all.
 
 ### **`NotesList.vue`**
-```vue
+```html
 <script>
 export default {
   props: {
