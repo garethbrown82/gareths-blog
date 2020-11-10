@@ -352,6 +352,10 @@ You can see I've highlighted the endpoint URL to access your function. You can n
 
 Ok that concludes this tutorial and should be enough to get you started using Firebase Cloud Functions. I've put some references below that I found very helpful and that I referenced throughout this tutorial. I recommend that you have a look.
 
+## Next step
+
+If you're only interested in Firebase Cloud Functions you can probably stop here but I've also put together a part 2. The next tutorial will go through how to implement a frontend using Vue 3 that will interact with the endpoints you've just created. [Adding Vue frontend to Firebase Functions API - Part 2](firebase-functions-2-vue).
+
 
 
 ### References
