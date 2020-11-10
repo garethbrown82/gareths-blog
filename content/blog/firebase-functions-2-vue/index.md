@@ -3,20 +3,20 @@ title: Adding Vue frontend to Firebase Functions API - Part 2
 date: "2020-10-23T07:22:13+00:00"
 ---
 
-This is a part 2 of the previous post for setting up Firebase Functions. I thought it would be good to have a frontend for our API. I'm very new to Vue JS so I've chosen to use Vue mainly as a way to learn it further myself. I'm not going to explain in detail about which part of Vue js does what, rather I'm just going to show you how to implement it. There are loads of really good introductions and how tos for Vue js if you want to look into it in more detail, I would recommend [Tania Rascia's overview and walkthrough](https://www.taniarascia.com/getting-started-with-vue/) (Vue 2). A good place to start is also the [Vue Introduction](https://vuejs.org/v2/guide/index.html). This is for Vue 2 but there's a drop down on the page where you can see the introduction for Vue 3.
+This is a part 2 of the previous post for setting up Firebase Functions. I thought it would be good to have a frontend for our API. I'm very new to Vue JS so I've chosen to use Vue mainly as a way to learn it further myself. I'm not going to explain in detail about which part of Vue js does what, rather I'm just going to show you how to implement it. There are loads of really good introductions and how-tos for Vue js if you want to look into it in more detail, I would recommend [Tania Rascia's overview and walkthrough](https://www.taniarascia.com/getting-started-with-vue/) (Vue 2). A good place to start is also the [Vue Introduction](https://vuejs.org/v2/guide/index.html). This is for Vue 2 but there's a drop down on the page where you can see the introduction for Vue 3.
 
 ## Installing Vue JS
 
-First we need to install Vue on in our project. Make sure you're a level up from your the root of your project directory. The Vue CLI can be used to create a whole new Vue project but can also add Vue to an existing project, which is what we're going to do.
+First we need to install Vue in our project. Make sure you're a level up from the root of your project directory. The Vue CLI can be used to create a whole new Vue project but can also add Vue to an existing project, which is what we're going to do.
 
-Run the following to install vue into the current project folder, make sure the folder name matches exactly otherwise a new folder and project will be created. Make sure to select the 'Merge' option so that your project is not overwritten.
+Run the following to install Vue into the current project folder, make sure the folder name matches exactly otherwise a new folder and project will be created. Select the 'Merge' option so that your project is not overwritten.
 ```
 vue create notes-editor
 ```
 
 I was given the option to select Vue 2 or Try Vue 3, I'm going to dive into Vue 3 which I'll use for the rest of this tutorial.
 
-Ok this is installed and ready to go. You can see the default Vue app by running:
+Once this is installed you're ready to go. You can see the default Vue app by running:
 
 ```
 npm run serve
@@ -26,7 +26,7 @@ npm run serve
 
 ## Display the notes
 
-The first bit of UI we'll work on is displaying a list of all the notes we have saved. Create a directory named `components` and a file inside named `components/NotesList.vue`. We'll just add some placeholder text here for the moment.
+The first section of UI we'll work on is displaying a list of all the notes we have saved. Create a directory named `components` and a file inside named `components/NotesList.vue`. We'll just add some placeholder text here for the moment.
 
 ### **`NotesList.vue`**
 ```vue
@@ -81,7 +81,7 @@ Once you've done this just go ahead and delete the now redundant `HelloWorld.vue
 
 ![Browser screenshot](./assets/notes_go_here.png)
 
-Now we'll hard code a list of notes in our component using the composition API by setting `notes` as a reactive variable. I'm primarily a React developer so if you're familiar with React then setting a variable using `ref()` is basically the same as component state in React. To render these notes to the UI we can using the Vue `v-for` directive which will loop through the array of notes and display each one.
+Now we'll hard code a list of notes in our component using the composition API by setting `notes` as a reactive variable. I'm primarily a React developer so if you're familiar with React then setting a variable using `ref()` is basically the same as component state in React. To render these notes to the UI we can use the Vue `v-for` directive which will loop through the array of notes and display each one.
 
 ### **`NotesList.vue`**
 ```vue
@@ -177,7 +177,7 @@ Change the Firebase emulator to run on a different port, I had to change mine to
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  // Add this to chance the port number the Firebase emulator will run on
+  // Add this to change the port number the Firebase emulator will run on
   "emulators": {
     "firestore": {
       "port": 8082
@@ -199,7 +199,7 @@ Then in the `scripts` section of your `package.json` file add the follow script 
   },
 ```
 
-Now try running Vue and the Firebase emulator concurrently in your terminal, run this from the root of your project directory.
+Now try running Vue and the Firebase emulator concurrently in your terminal, run the following from the root of your project directory.
 
 ```
 npm start
@@ -207,17 +207,17 @@ npm start
 
 ## Get notes from Firestore
 
-In part 1 of this tutorial we added some notes to Firestore and create a Firebase function that would get the notes from Firestore and return them to us. If you go to your Firebase emulator logs tab (mine is at http://localhost:4000/logs) you'll see the endpoint for this get request.
+In part 1 of this tutorial we added some notes to Firestore and created a Firebase function that would get the notes from Firestore and return them to us. If you go to your Firebase emulator logs tab (mine is at http://localhost:4000/logs) you'll see the endpoint for this get request.
 
 ![Endpoint in Firebase logs](./assets/firebase_logs.png).
 
-We're going to setup our Vue app so that we populate the note by getting them from this endpoint. It's common to use axios for this, so that's what we'll do. Install axios using the following:
+We're going to setup our Vue app so that we populate the notes by getting them from this endpoint. It's common to use axios for this, so that's what we'll do. Install axios using the following:
 
 ```
 npm install axios
 ```
 
-Then in your `NotesList.vue` file change to script to request notes from your endpoint using axios. We'll do this in the `onMounted` lifecycle hook which is call when the component is mounted. Remember you can find your `notes` endpoint in the logs we discussed above.
+Then in your `NotesList.vue` file change the script to request notes from your endpoint using axios. We'll do this in the `onMounted` lifecycle hook which is called when the component is mounted. Remember you can find your `notes` endpoint in the logs we discussed above.
 
 ### **`NotesList.vue`**
 ```vue
@@ -323,7 +323,7 @@ export default {
 </style>
 ```
 
-We've create a function named `addNote()` which will take the title and text of the note we enter in the text input and text area, then send it using a post request to our endpoint. You'll need to add your own endpoint URL.
+We've created a function named `addNote()` which will take the title and text of the note we enter in the text input and text area, then send it using a post request to our endpoint. You'll need to add your own endpoint URL.
 
 Now render this new component inside `App.vue` like the following:
 
@@ -521,6 +521,12 @@ export default {
 }
 </script>
 ```
+
+Once you've made these changes refresh the browser and add another note, you should see it be automatically added to the notes list in the UI.
+
+## Conclusion
+
+You've now successfully created a web app using Vue on the frontend and Firebase Cloud functions on the back end. This tutorial should give you a good starting point to implement more functionality using these tools and create your own web app. If you would like to learn more about Firebase then you can have a look at my [Building Web Applications with Firebase](https://www.manning.com/livevideo/building-web-applications-with-firebase) course online at Manning.
 
 
 
