@@ -21,13 +21,22 @@ const pageQuery = graphql`
         createdAt
       }
     }
+    site {
+      siteMetadata {
+        title
+      }
+    }
   }
 `
 
 const BlogIndex = (props) => {
-  const { gcms: { posts } } = useStaticQuery(pageQuery)
+  const {
+    gcms: { posts },
+    site: { siteMetadata }
+  } = useStaticQuery(pageQuery)
+
   return (
-    <Layout location="location goes here" title="site title goes here...">
+    <Layout location={props.location} title={siteMetadata.title}>
       <SEO
         title="All posts"
         keywords={[`blog`, `gatsby`, `javascript`, `react`]}
