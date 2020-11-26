@@ -5,6 +5,7 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm } from "../utils/typography"
+import { formatDate } from "../utils/format"
 
 import { defineCustomElements as deckDeckGoHighlightElement } from '@deckdeckgo/highlight-code/dist/loader';
 deckDeckGoHighlightElement();
@@ -16,6 +17,7 @@ const pageQuery = graphql`
         id
         slug
         title
+        description
         createdAt
       }
     }
@@ -23,9 +25,6 @@ const pageQuery = graphql`
 `
 
 const BlogIndex = (props) => {
-  // const { data } = this.props
-  // const siteTitle = data.site.siteMetadata.title
-  // const posts = data.allMarkdownRemark.edges
   const { gcms: { posts } } = useStaticQuery(pageQuery)
   return (
     <Layout location="location goes here" title="site title goes here...">
@@ -34,22 +33,20 @@ const BlogIndex = (props) => {
         keywords={[`blog`, `gatsby`, `javascript`, `react`]}
       />
       <Bio />
-      {posts.map((post) => {
-        const title = post.title || post.slug
+      {posts.map(({ title, slug, createdAt, description }) => {
         return (
-          <div key={post.slug}>
+          <div key={slug}>
             <h3
               style={{
                 marginBottom: rhythm(1 / 4),
               }}
             >
-              <Link style={{ boxShadow: `none` }} to={post.slug}>
+              <Link style={{ boxShadow: `none` }} to={slug}>
                 {title}
               </Link>
             </h3>
-            <small>{post.createdAt}</small>
-            {/* <p dangerouslySetInnerHTML={{ __html: post.excerpt }} /> */}
-            <p>Description goes here</p>
+            <small>{formatDate(createdAt)}</small>
+            <p>{description}</p>
           </div>
         )
       })}
@@ -58,27 +55,3 @@ const BlogIndex = (props) => {
 }
 
 export default BlogIndex
-
-// export const pageQuery = graphql`
-//   query {
-//     site {
-//       siteMetadata {
-//         title
-//       }
-//     }
-//     allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
-//       edges {
-//         node {
-//           excerpt
-//           fields {
-//             slug
-//           }
-//           frontmatter {
-//             date(formatString: "MMMM DD, YYYY")
-//             title
-//           }
-//         }
-//       }
-//     }
-//   }
-// `
