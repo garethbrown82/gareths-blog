@@ -11,7 +11,12 @@ class BlogPostTemplate extends React.Component {
     const post = this.props.data.gcms.post
     const siteTitle = this.props.data.site.siteMetadata.title
     const { previous, next } = this.props.pageContext
-    console.log('post: ', post)
+
+    const displayDate = new Date(post.createdAt).toLocaleDateString('en-GB', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
 
     return (
       <Layout location={this.props.location} title={siteTitle}>
@@ -25,7 +30,7 @@ class BlogPostTemplate extends React.Component {
             marginTop: rhythm(-1),
           }}
         >
-          {post.createdAt}
+          {displayDate}
         </p>
         <div>
           {post.body}
