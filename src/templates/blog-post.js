@@ -32,9 +32,7 @@ class BlogPostTemplate extends React.Component {
         >
           {displayDate}
         </p>
-        <div>
-          {post.body}
-        </div>
+        <div dangerouslySetInnerHTML={{ __html: post.body.html }} />
         <hr
           style={{
             marginBottom: rhythm(1),
@@ -86,7 +84,7 @@ export const pageQuery = graphql`
         id
         slug
         title
-        body
+        body {html}
         description
         createdAt
       }
