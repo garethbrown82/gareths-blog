@@ -5,10 +5,21 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import { rhythm, scale } from "../utils/typography"
+import remark from 'remark'
+import html from 'remark-html'
+
 
 class BlogPostTemplate extends React.Component {
   render() {
     const post = this.props.data.gcms.post
+
+    let blogBody = '';
+    remark()
+      .use(html)
+      .process(post.body, function (err, file) {
+        blogBody = String(file)
+      })
+
     const siteTitle = this.props.data.site.siteMetadata.title
     const { previous, next } = this.props.pageContext
 
@@ -32,7 +43,7 @@ class BlogPostTemplate extends React.Component {
         >
           {displayDate}
         </p>
-        <div>{post.body}</div>
+        <div dangerouslySetInnerHTML={{ __html: blogBody }} />
         <hr
           style={{
             marginBottom: rhythm(1),
