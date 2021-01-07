@@ -13,7 +13,10 @@ deckDeckGoHighlightElement();
 const pageQuery = graphql`
   {
     gcms {
-      posts {
+      posts(
+        stage: PUBLISHED
+        orderBy:createdAt_DESC
+      ) {
         id
         slug
         title
